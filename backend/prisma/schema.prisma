@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model User {
+  id              Int       @id @default(autoincrement())
+  email           String?   @unique @db.VarChar(255)
+  passwordHash    String?   @db.VarChar(255)
+  name            String?   @db.VarChar(50)
+  emailVerifiedAt DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+
+  posts              Post[]
+  comments           Comment[]
+  authSessions       AuthSession[]
+  emailVerifications EmailVerification[]
+  passwordResets     PasswordReset[]
+
+  @@index([deletedAt])
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  title     String    @db.VarChar(100)
+  content   String    @db.Text
+  userId    Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  author   User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  comments Comment[]
+
+  @@index([userId])
+  @@index([createdAt, id])
+  @@index([deletedAt])
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String    @db.VarChar(1000)
+  userId    Int?
+  postId    Int
+  parentId  Int?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  author  User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  post    Post      @relation(fields: [postId], references: [id], onDelete: Restrict)
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Restrict)
+  replies Comment[] @relation("CommentReplies")
+
+  @@index([userId])
+  @@index([postId, parentId, createdAt, id])
+  @@index([parentId])
+  @@index([deletedAt])
+}
+
+model AuthSession {
+  id                String    @id @default(uuid()) @db.Char(36)
+  userId            Int
+  absoluteExpiresAt DateTime
+  lastUsedAt        DateTime?
+  revokedAt         DateTime?
+  createdAt         DateTime  @default(now())
+
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  refreshTokens RefreshToken[]
+
+  @@index([userId, revokedAt])
+  @@index([absoluteExpiresAt])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid()) @db.Char(36)
+  sessionId String    @db.Char(36)
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  session AuthSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, revokedAt])
+  @@index([expiresAt])
+}
+
+model EmailVerification {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    Int
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PasswordReset {
+  id        String    @id @default(uuid()) @db.Char(36)
+  userId    Int
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}

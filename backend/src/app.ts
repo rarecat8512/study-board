@@ -36,7 +36,7 @@ export function createApp(options: CreateAppOptions = {}) {
     if (request.path.startsWith("/api/auth")) {
       response.setHeader("Cache-Control", "no-store");
     }
-    if (env.NODE_ENV === "production") {
+    if (env.NODE_ENV === "production" && env.COOKIE_SECURE) {
       response.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
     }
     next();

@@ -3,12 +3,14 @@ import { z } from "zod";
 
 const optionalString = z.preprocess((value) => value === "" ? undefined : value, z.string().min(1).optional());
 const optionalEmail = z.preprocess((value) => value === "" ? undefined : value, z.email().optional());
+const booleanString = z.enum(["true", "false"]).transform((value) => value === "true");
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
   FRONTEND_URL: z.url(),
   APP_URL: z.url(),
+  COOKIE_SECURE: booleanString.optional(),
   DATABASE_HOST: z.string().min(1),
   DATABASE_PORT: z.coerce.number().int().positive().default(3306),
   DATABASE_USER: z.string().min(1),
@@ -37,4 +39,7 @@ if (!result.success) {
   throw new Error("Environment variable validation failed");
 }
 
-export const env = result.data;
+export const env = {
+  ...result.data,
+  COOKIE_SECURE: result.data.COOKIE_SECURE ?? result.data.NODE_ENV === "production"
+};

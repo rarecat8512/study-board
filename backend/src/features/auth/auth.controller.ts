@@ -22,7 +22,7 @@ function setRefreshTokenCookie(
 ) {
   response.cookie(REFRESH_TOKEN_COOKIE_NAME, token, {
     httpOnly: true,
-    secure: env.NODE_ENV === "production",
+    secure: env.COOKIE_SECURE,
     sameSite: "lax",
     path: "/api/auth",
     expires
@@ -32,7 +32,7 @@ function setRefreshTokenCookie(
 function clearRefreshTokenCookie(response: Parameters<RequestHandler>[1]) {
   response.clearCookie(REFRESH_TOKEN_COOKIE_NAME, {
     httpOnly: true,
-    secure: env.NODE_ENV === "production",
+    secure: env.COOKIE_SECURE,
     sameSite: "lax",
     path: "/api/auth"
   });

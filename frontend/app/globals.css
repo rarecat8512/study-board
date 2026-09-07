@@ -169,11 +169,16 @@ h1 {
 .activity-heading h2 { margin: 0; }
 .activity-heading h2 span { margin-left: 6px; color: #667085; font-size: 15px; font-weight: 600; }
 .activity-heading a { color: #3563e9; font-weight: 700; text-decoration: none; }
-.activity-list { display: grid; gap: 10px; }
-.activity-item { display: grid; grid-template-columns: 1fr auto; gap: 6px 16px; padding: 17px; border: 1px solid #e4e8ef; border-radius: 12px; color: inherit; text-decoration: none; }
-.activity-item:hover { border-color: #9fb3ee; background: #f8faff; }
-.activity-item span { color: #7b8495; font-size: 13px; }
-.activity-item p { grid-column: 1 / -1; margin: 0; color: #536078; line-height: 1.55; }
+.activity-table { overflow: hidden; border: 1px solid #dfe5ef; border-radius: 14px; }
+.activity-table-header, .activity-table-row { display: grid; align-items: center; gap: 20px; padding: 14px 18px; }
+.activity-post-table .activity-table-header, .activity-post-table .activity-table-row { grid-template-columns: minmax(0, 1fr) 140px; }
+.activity-comment-table .activity-table-header, .activity-comment-table .activity-table-row { grid-template-columns: 80px minmax(0, 1fr) 140px; }
+.activity-table-header { background: #f6f8fb; color: #667085; font-size: 13px; font-weight: 700; }
+.activity-table-row { min-height: 58px; border-top: 1px solid #e6eaf1; color: inherit; text-decoration: none; }
+.activity-table-row:hover { background: #f8faff; }
+.activity-table-row strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.activity-table-row time { color: #778195; font-size: 14px; }
+.activity-kind { color: #3563e9; font-size: 13px; font-weight: 700; }
 .activity-item-deleted { background: #f7f8fa; color: #8b94a4; }
 .activity-empty, .mypage-message { padding: 48px 20px; color: #778195; text-align: center; }
 .activity-pagination { margin-top: 20px; }
@@ -197,6 +202,10 @@ h1 {
   .account-settings-grid { grid-template-columns: 1fr; }
   .post-search { flex-wrap: wrap; }
   .post-search input { flex-basis: 100%; }
+  .activity-table-header { display: none; }
+  .activity-post-table .activity-table-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .activity-comment-table .activity-table-row { grid-template-columns: auto minmax(0, 1fr); gap: 8px 12px; }
+  .activity-comment-table .activity-table-row time { grid-column: 2; }
 }
 
 .state-page { text-align: center; }

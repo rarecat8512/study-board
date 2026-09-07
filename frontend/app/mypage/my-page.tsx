@@ -10,7 +10,7 @@ type MyPageData = {
   user: { id: number; email: string; name: string; createdAt: string };
   counts: { posts: number; comments: number };
   pagination: { posts: PaginationData; comments: PaginationData };
-  posts: Array<{ id: number; title: string; content: string; createdAt: string; isDeleted: boolean }>;
+  posts: Array<{ id: number; title: string; createdAt: string; isDeleted: boolean }>;
   comments: Array<{
     id: number;
     content: string;
@@ -24,7 +24,6 @@ type MyPageData = {
 type PaginationData = { page: number; limit: number; totalItems: number; totalPages: number };
 
 function ActivityPagination({ label, pagination, onPageChange }: { label: string; pagination: PaginationData; onPageChange: (page: number) => void }) {
-  if (pagination.totalPages <= 1) return null;
   const firstPage = Math.min(Math.max(1, pagination.page - 2), Math.max(1, pagination.totalPages - 4));
   const lastPage = Math.min(pagination.totalPages, firstPage + 4);
   const pages = Array.from({ length: lastPage - firstPage + 1 }, (_, index) => firstPage + index);
@@ -74,12 +73,12 @@ export function MyPage() {
       </section>
       <section className="activity-section">
         <div className="activity-heading"><h2>내 게시글 <span>총 {data.counts.posts}개</span></h2><Link href="/posts/new">새 글 작성</Link></div>
-        {data.posts.length ? <div className="activity-list">{data.posts.map((post) => <Link className={post.isDeleted ? "activity-item activity-item-deleted" : "activity-item"} href={`/posts/${post.id}`} key={post.id}><strong>{post.title}</strong><span>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(post.createdAt))}</span><p>{post.content.length > 90 ? `${post.content.slice(0, 90)}…` : post.content}</p></Link>)}</div> : <p className="activity-empty">작성한 게시글이 없습니다.</p>}
+        {data.posts.length ? <div className="activity-table activity-post-table"><div className="activity-table-header" aria-hidden="true"><span>제목</span><span>작성일</span></div>{data.posts.map((post) => <Link className={post.isDeleted ? "activity-table-row activity-item-deleted" : "activity-table-row"} href={`/posts/${post.id}`} key={post.id}><strong>{post.title}</strong><time dateTime={post.createdAt}>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(post.createdAt))}</time></Link>)}</div> : <p className="activity-empty">작성한 게시글이 없습니다.</p>}
         <ActivityPagination label="내 게시글" pagination={data.pagination.posts} onPageChange={setPostPage} />
       </section>
       <section className="activity-section">
         <div className="activity-heading"><h2>내 댓글·대댓글 <span>총 {data.counts.comments}개</span></h2></div>
-        {data.comments.length ? <div className="activity-list">{data.comments.map((comment) => <Link className={comment.isDeleted ? "activity-item activity-item-deleted" : "activity-item"} href={`/posts/${comment.post.id}`} key={comment.id}><strong>{comment.isReply ? "대댓글" : "댓글"} · {comment.post.title}</strong><span>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(comment.createdAt))}</span><p>{comment.content}</p></Link>)}</div> : <p className="activity-empty">작성한 댓글이 없습니다.</p>}
+        {data.comments.length ? <div className="activity-table activity-comment-table"><div className="activity-table-header" aria-hidden="true"><span>구분</span><span>내용</span><span>작성일</span></div>{data.comments.map((comment) => <Link className={comment.isDeleted ? "activity-table-row activity-item-deleted" : "activity-table-row"} href={`/posts/${comment.post.id}`} key={comment.id}><span className="activity-kind">{comment.isReply ? "대댓글" : "댓글"}</span><strong>{comment.content}</strong><time dateTime={comment.createdAt}>{new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(comment.createdAt))}</time></Link>)}</div> : <p className="activity-empty">작성한 댓글이 없습니다.</p>}
         <ActivityPagination label="내 댓글과 대댓글" pagination={data.pagination.comments} onPageChange={setCommentPage} />
       </section>
       <AccountSettings />

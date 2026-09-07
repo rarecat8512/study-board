@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuth } from "../auth/auth-context";
 import { apiUrl, readApiResponse } from "../lib/api";
@@ -38,11 +39,19 @@ function ActivityPagination({ label, pagination, onPageChange }: { label: string
 }
 
 export function MyPage() {
-  const { accessToken, authorizedFetch, isAuthReady, user } = useAuth();
+  const router = useRouter();
+  const { accessToken, authorizedFetch, isAuthReady, logout, user } = useAuth();
   const [data, setData] = useState<MyPageData | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [postPage, setPostPage] = useState(1);
   const [commentPage, setCommentPage] = useState(1);
+
+  async function handleLogout() {
+    setIsLoggingOut(true);
+    await logout();
+    router.replace("/login");
+  }
 
   useEffect(() => {
     if (!isAuthReady || !accessToken || !user) return;
@@ -64,7 +73,10 @@ export function MyPage() {
     <>
       <header className="mypage-header">
         <div><p className="eyebrow">My activity</p><h1>마이페이지</h1><p>{data.user.name}님의 학습 기록을 모아봤어요.</p></div>
-        <Link className="secondary-link" href="/">홈</Link>
+        <div className="mypage-header-actions">
+          <Link className="secondary-link" href="/">홈</Link>
+          <button className="logout-button" type="button" disabled={isLoggingOut} onClick={() => void handleLogout()}>{isLoggingOut ? "로그아웃 중..." : "로그아웃"}</button>
+        </div>
       </header>
       <section className="profile-card">
         <div><span>이름</span><strong>{data.user.name}</strong></div>

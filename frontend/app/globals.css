@@ -160,6 +160,8 @@ h1 {
 .mypage-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 28px; }
 .mypage-header h1 { font-size: clamp(42px, 7vw, 64px); }
 .mypage-header p:last-child { margin: 12px 0 0; color: #667085; }
+.mypage-header-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
+.mypage-header-actions .logout-button:disabled { cursor: wait; opacity: 0.65; }
 .profile-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 26px; border: 1px solid #dfe5ef; border-radius: 18px; background: #fff; }
 .profile-card div { display: grid; gap: 7px; }
 .profile-card span { color: #778195; font-size: 13px; }
@@ -198,6 +200,7 @@ h1 {
 
 @media (max-width: 700px) {
   .mypage-header { align-items: flex-start; flex-direction: column; }
+  .mypage-header-actions { justify-content: flex-start; }
   .profile-card { grid-template-columns: 1fr; }
   .account-settings-grid { grid-template-columns: 1fr; }
   .post-search { flex-wrap: wrap; }

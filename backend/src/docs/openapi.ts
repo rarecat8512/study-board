@@ -103,7 +103,10 @@ export const openApiDocument = {
       delete: { tags: ["Auth"], summary: "회원 탈퇴", description: "개인정보를 영구 삭제하고 작성 콘텐츠의 작성자를 익명화합니다.", security: bearer, requestBody: jsonBody({ type: "object", required: ["currentPassword"], properties: { currentPassword: { type: "string", format: "password" } } }), responses: { "200": { description: "탈퇴 완료" }, ...errorResponses } }
     },
     "/api/users/me": {
-      get: { tags: ["Users"], summary: "마이페이지 정보와 최근 활동", security: bearer, responses: { "200": { description: "사용자, 활동 개수, 최근 게시글·댓글" }, ...errorResponses } }
+      get: { tags: ["Users"], summary: "마이페이지 정보와 활동 목록", security: bearer, parameters: [
+        { name: "postPage", in: "query", schema: { type: "integer", minimum: 1, default: 1 } },
+        { name: "commentPage", in: "query", schema: { type: "integer", minimum: 1, default: 1 } }
+      ], responses: { "200": { description: "사용자 정보와 페이지별 게시글·댓글" }, ...errorResponses } }
     },
     "/api/posts": {
       get: {

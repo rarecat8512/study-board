@@ -70,4 +70,43 @@ describe("GET /api/users/me", () => {
     expect(response.body.comments[0]).toMatchObject({ content: "삭제된 댓글입니다.", isDeleted: true });
     expect(JSON.stringify(response.body)).not.toContain("삭제 전 비밀");
   });
+
+  it("paginates posts and comments independently in groups of ten", async () => {
+    const { app, user, accessToken } = await loginMyPageUser();
+    await prisma.post.createMany({
+      data: Array.from({ length: 12 }, (_, index) => ({
+        userId: user.id,
+        title: `페이지 게시글 ${index + 1}`,
+        content: `페이지 내용 ${index + 1}`
+      }))
+    });
+    const post = await prisma.post.findFirstOrThrow({ where: { userId: user.id } });
+    await prisma.comment.createMany({
+      data: Array.from({ length: 12 }, (_, index) => ({
+        userId: user.id,
+        postId: post.id,
+        content: `페이지 댓글 ${index + 1}`
+      }))
+    });
+
+    const response = await request(app)
+      .get("/api/users/me?postPage=2&commentPage=1")
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.posts).toHaveLength(2);
+    expect(response.body.comments).toHaveLength(10);
+    expect(response.body.pagination.posts).toEqual({ page: 2, limit: 10, totalItems: 12, totalPages: 2 });
+    expect(response.body.pagination.comments).toEqual({ page: 1, limit: 10, totalItems: 12, totalPages: 2 });
+  });
+
+  it("rejects invalid activity page numbers", async () => {
+    const { app, accessToken } = await loginMyPageUser();
+    const response = await request(app)
+      .get("/api/users/me?postPage=0")
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.code).toBe("VALIDATION_ERROR");
+  });
 });

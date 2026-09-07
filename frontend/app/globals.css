@@ -109,7 +109,14 @@ h1 {
 
 .posts-header-actions {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
+}
+
+.posts-header-actions .logout-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
 }
 
 .post-search {

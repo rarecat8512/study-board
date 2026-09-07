@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { PostList } from "./post-list";
+import { PostsHeaderActions } from "./posts-header-actions";
 
 type PostsPageProps = {
   searchParams: Promise<{ page?: string | string[]; q?: string | string[] }>;
@@ -23,7 +24,7 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
           <p className="posts-description">배운 것과 고민한 내용을 함께 기록합니다.</p>
         </div>
         <div className="posts-header-actions">
-          <Link className="primary-link" href="/posts/new">글 작성</Link>
+          <PostsHeaderActions />
         </div>
       </header>
       <form className="post-search" action="/posts" method="get" role="search">

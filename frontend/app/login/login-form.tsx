@@ -23,7 +23,7 @@ export function LoginForm({ notice }: { notice?: string }) {
         email: String(formData.get("email") ?? ""),
         password: String(formData.get("password") ?? "")
       });
-      router.push("/");
+      router.replace("/posts");
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : "로그인 중 문제가 발생했습니다."

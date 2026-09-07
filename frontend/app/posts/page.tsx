@@ -23,7 +23,6 @@ export default async function PostsPage({ searchParams }: PostsPageProps) {
           <p className="posts-description">배운 것과 고민한 내용을 함께 기록합니다.</p>
         </div>
         <div className="posts-header-actions">
-          <Link className="secondary-link" href="/">홈</Link>
           <Link className="primary-link" href="/posts/new">글 작성</Link>
         </div>
       </header>

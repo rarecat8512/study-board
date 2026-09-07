@@ -197,29 +197,42 @@ h1 {
 
 .post-list {
   display: grid;
-  gap: 14px;
-}
-
-.post-summary {
-  padding: 26px 28px;
+  overflow: hidden;
   border: 1px solid #dfe5ef;
   border-radius: 18px;
   background: #ffffff;
   box-shadow: 0 12px 32px rgba(39, 55, 85, 0.06);
 }
 
-.post-summary-meta {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  color: #778195;
+.post-list-header,
+.post-summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 140px;
+  gap: 20px;
+  align-items: center;
+}
+
+.post-list-header {
+  padding: 14px 22px;
+  background: #f6f8fb;
+  color: #667085;
   font-size: 13px;
+  font-weight: 700;
+}
+
+.post-summary {
+  padding: 18px 22px;
+  border-top: 1px solid #e6eaf1;
 }
 
 .post-summary h2 {
-  margin: 14px 0 10px;
-  font-size: 23px;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  font-size: 17px;
   letter-spacing: -0.025em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post-summary h2 a {
@@ -511,11 +524,10 @@ h1 {
   border: 0;
 }
 
-.post-summary p {
-  margin: 0;
-  color: #5b667a;
-  line-height: 1.65;
-  white-space: pre-wrap;
+.post-summary-author,
+.post-summary-date {
+  color: #778195;
+  font-size: 14px;
 }
 
 .post-summary-deleted {
@@ -523,8 +535,28 @@ h1 {
 }
 
 .post-summary-deleted h2,
-.post-summary-deleted p {
+.post-summary-deleted .post-summary-author,
+.post-summary-deleted .post-summary-date {
   color: #8a93a3;
+}
+
+@media (max-width: 700px) {
+  .post-list-header {
+    display: none;
+  }
+
+  .post-summary {
+    grid-template-columns: 1fr auto;
+    gap: 8px 14px;
+  }
+
+  .post-summary h2 {
+    grid-column: 1 / -1;
+  }
+
+  .post-summary-date {
+    text-align: right;
+  }
 }
 
 .post-list-message,

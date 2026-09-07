@@ -7,7 +7,6 @@ import { apiFetch, readApiResponse } from "../lib/api";
 type PostSummary = {
   id: number;
   title: string;
-  content: string;
   createdAt: string;
   isDeleted: boolean;
   author: {
@@ -33,7 +32,7 @@ export function PostList({ page, query }: { page: number; query: string }) {
   useEffect(() => {
     let isCurrent = true;
 
-    const params = new URLSearchParams({ page: String(page), limit: "10" });
+    const params = new URLSearchParams({ page: String(page), limit: "30" });
     if (query) params.set("q", query);
 
     void apiFetch(`/api/posts?${params.toString()}`)
@@ -92,16 +91,18 @@ export function PostList({ page, query }: { page: number; query: string }) {
   return (
     <>
       <div className="post-list" aria-live="polite">
+        <div className="post-list-header" aria-hidden="true">
+          <span>제목</span>
+          <span>작성자</span>
+          <span>작성일</span>
+        </div>
         {data.posts.map((post) => (
           <article className={`post-summary${post.isDeleted ? " post-summary-deleted" : ""}`} key={post.id}>
-            <div className="post-summary-meta">
-              <span>{post.author.name}</span>
-              <time dateTime={post.createdAt}>
-                {new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(post.createdAt))}
-              </time>
-            </div>
             <h2><Link href={`/posts/${post.id}`}>{post.title}</Link></h2>
-            <p>{post.content.length > 140 ? `${post.content.slice(0, 140)}…` : post.content}</p>
+            <span className="post-summary-author">{post.author.name}</span>
+            <time className="post-summary-date" dateTime={post.createdAt}>
+              {new Intl.DateTimeFormat("ko-KR", { dateStyle: "medium" }).format(new Date(post.createdAt))}
+            </time>
           </article>
         ))}
       </div>

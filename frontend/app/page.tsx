@@ -1,23 +1,25 @@
-import { AuthStatus } from "./auth/auth-status";
-import Link from "next/link";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "./auth/auth-context";
 
 export default function HomePage() {
+  const router = useRouter();
+  const { accessToken, isAuthReady, user } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthReady) return;
+
+    router.replace(user && accessToken ? "/posts" : "/login");
+  }, [accessToken, isAuthReady, router, user]);
+
   return (
-    <main className="page-shell">
-      <section className="hero">
-        <p className="eyebrow">Frontend to FullStack</p>
-        <h1>Study Board</h1>
-        <p className="description">
-          Next.js, Express, Prisma, MySQL과 JWT 인증 흐름을 이해하며 만드는 학습용 게시판입니다.
-        </p>
-        <div className="status-card">
-          <span className="status-dot" aria-hidden="true" />
-          <span>인증·게시판 핵심 기능 구현 완료</span>
-        </div>
-        <div className="home-actions">
-          <Link className="secondary-link" href="/posts">게시글 보기</Link>
-          <AuthStatus />
-        </div>
+    <main className="page-shell state-page">
+      <section className="state-card" aria-live="polite">
+        <span className="loading-spinner" aria-hidden="true" />
+        <h1>로그인 상태 확인 중</h1>
+        <p>잠시만 기다려주세요.</p>
       </section>
     </main>
   );

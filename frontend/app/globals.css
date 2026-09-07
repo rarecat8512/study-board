@@ -136,6 +136,13 @@ h1 {
   box-shadow: 0 0 0 4px rgba(53, 99, 233, 0.12);
 }
 
+.post-search .login-button {
+  flex: 0 0 auto;
+  min-width: 88px;
+  padding: 0 20px;
+  white-space: nowrap;
+}
+
 .mypage-page {
   width: min(980px, calc(100% - 48px));
   min-height: 100vh;
